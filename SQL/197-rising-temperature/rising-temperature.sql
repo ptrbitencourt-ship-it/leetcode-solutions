@@ -1,7 +1,7 @@
-# Write your MySQL query statement below
+-- Write your PostgreSQL query statement below
 
-SELECT W.id
-FROM Weather W
-JOIN Weather T
-    ON T.recordDate = DATE_SUB(W.recordDate, INTERVAL 1 DAY)
-WHERE W.temperature > T.temperature;
+SELECT Today.id
+FROM Weather AS Today
+JOIN Weather AS Yesterday
+    ON Today.recordDate = Yesterday.recordDate + INTERVAL '1 day'
+WHERE Today.temperature > Yesterday.temperature;
