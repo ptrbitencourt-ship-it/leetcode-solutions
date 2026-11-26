@@ -1,13 +1,22 @@
 -- Write your PostgreSQL query statement below
 
-WITH sequencias AS (
+WITH validos AS (
     SELECT
         id,
         visit_date,
         people,
-        id - ROW_NUMBER() OVER (ORDER BY id) AS grupo
+        ROW_NUMBER() OVER (ORDER BY id) AS rn
     FROM Stadium
     WHERE people >= 100
+),
+
+sequencias AS (
+    SELECT
+        id,
+        visit_date,
+        people,
+        id - rn AS grupo
+    FROM validos
 ),
 
 grupos_validos AS (
@@ -22,6 +31,8 @@ SELECT
     S.visit_date,
     S.people
 FROM sequencias S
-JOIN grupos_validos G
-    ON G.grupo = S.grupo
+WHERE S.grupo IN (
+    SELECT grupo
+    FROM grupos_validos
+)
 ORDER BY S.visit_date ASC;
